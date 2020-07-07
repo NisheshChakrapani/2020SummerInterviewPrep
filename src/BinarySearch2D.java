@@ -3,6 +3,7 @@ import java.awt.*;
 public class BinarySearch2D {
     public static void main(String[] args) {
         testSet1();
+        testSet2();
     }
 
     public static void testSet1() {
@@ -21,6 +22,28 @@ public class BinarySearch2D {
         System.out.println(p13);
         System.out.println(p14);
         System.out.println(p15);
+        System.out.println();
+    }
+
+    public static void testSet2() {
+        int[][] matrix2 = {
+                {1, 5, 8, 9},
+                {2, 6, 12, 13},
+                {5, 9, 15, 20},
+                {8, 17, 18, 31}};
+        Point p21 = binarySearch2D(matrix2, 9);
+        Point p22 = binarySearch2D(matrix2, 2);
+        Point p23 = binarySearch2D(matrix2, 15);
+        Point p24 = binarySearch2D(matrix2, 16);
+        Point p25 = binarySearch2D(matrix2, 32);
+        Point p26 = binarySearch2D(matrix2, 30);
+        System.out.println(p21);
+        System.out.println(p22);
+        System.out.println(p23);
+        System.out.println(p24);
+        System.out.println(p25);
+        System.out.println(p26);
+        System.out.println();
     }
 
     public static Point binarySearch2D(int[][] matrix, int target) {
