@@ -7,9 +7,15 @@ public class WordTraversing {
     public static Set<String> dictionary;
     public static void main(String[] args) {
         setupDictionary();
+        System.out.println("BFS:");
         bfs("damp", "like");
         bfs("damp", "dank");
         bfs("hole", "mark");
+        System.out.println("------------------------------------------------------");
+        System.out.println("DFS:");
+        dfs("damp", "like");
+        dfs("damp", "dank");
+        dfs("hole", "mark");
     }
 
     private static void setupDictionary() {
@@ -30,8 +36,29 @@ public class WordTraversing {
         for (String word : words) dictionary.add(word);
     }
 
-    private static void dfs(String word1, String word2) {
-
+    private static void dfs(String start, String end) {
+        Stack<String> fringe = new Stack<>();
+        Set<String> seen = new HashSet<>();
+        Map<String, String> cameFrom = new HashMap<>();
+        cameFrom.put(start, null);
+        fringe.push(start);
+        boolean found = false;
+        while (!fringe.isEmpty()) {
+            String curr = fringe.pop();
+            seen.add(curr);
+            List<String> next = getNextWords(curr);
+            for (String s : next) {
+                if (!seen.contains(s)) {
+                    fringe.push(s);
+                    cameFrom.put(s, curr);
+                    if (s.equals(end)) {
+                        found = true;
+                        break;
+                    }
+                }
+            }
+        }
+        printPath(found, end, cameFrom);
     }
 
     private static void bfs(String start, String end) {
@@ -63,17 +90,7 @@ public class WordTraversing {
             currList = nextList;
             nextList = new ArrayList<>();
         }
-        if (!found) System.out.println("No possible path exists between these words");
-        else {
-            String curr = end;
-            Stack<String> temp = new Stack<>();
-            while (curr != null) {
-                temp.push(curr);
-                curr = cameFrom.get(curr);
-            }
-            while (temp.size() > 1) System.out.print(temp.pop() + " --> ");
-            System.out.println(temp.pop());
-        }
+        printPath(found, end, cameFrom);
     }
 
     private static List<String> getNextWords(String word) {
@@ -91,5 +108,19 @@ public class WordTraversing {
             arr = word.toCharArray();
         }
         return words;
+    }
+
+    private static void printPath(boolean found, String end, Map<String, String> cameFrom) {
+        if (!found) System.out.println("No possible path exists between these words");
+        else {
+            String curr = end;
+            Stack<String> temp = new Stack<>();
+            while (curr != null) {
+                temp.push(curr);
+                curr = cameFrom.get(curr);
+            }
+            while (temp.size() > 1) System.out.print(temp.pop() + " --> ");
+            System.out.println(temp.pop());
+        }
     }
 }
