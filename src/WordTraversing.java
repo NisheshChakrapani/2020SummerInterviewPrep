@@ -1,5 +1,4 @@
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class WordTraversing {
     //Given a dictionary of real words, get from one given word to another given word by changing
@@ -8,6 +7,9 @@ public class WordTraversing {
     public static Set<String> dictionary;
     public static void main(String[] args) {
         setupDictionary();
+        bfs("damp", "like");
+        bfs("damp", "dank");
+        bfs("hole", "mark");
     }
 
     private static void setupDictionary() {
@@ -32,7 +34,62 @@ public class WordTraversing {
 
     }
 
-    private static void bfs(String word1, String word2) {
+    private static void bfs(String start, String end) {
+        start = start.toLowerCase();
+        end = end.toLowerCase();
+        Map<String, String> cameFrom = new HashMap<>();
+        cameFrom.put(start, null);
+        Set<String> seen = new HashSet<>();
+        seen.add(start);
+        List<String> currList = new ArrayList<>();
+        List<String> nextList = new ArrayList<>();
+        currList.add(start);
+        boolean found = false;
+        while(!currList.isEmpty()) {
+            for (String word : currList) {
+                List<String> oneLetterAway = getNextWords(word);
+                for (String nextWord : oneLetterAway) {
+                    if (!seen.contains(nextWord)) {
+                        nextList.add(nextWord);
+                        cameFrom.put(nextWord, word);
+                        seen.add(nextWord);
+                    }
+                    if (nextWord.equals(end)) {
+                        found = true;
+                        break;
+                    }
+                }
+            }
+            currList = nextList;
+            nextList = new ArrayList<>();
+        }
+        if (!found) System.out.println("No possible path exists between these words");
+        else {
+            String curr = end;
+            Stack<String> temp = new Stack<>();
+            while (curr != null) {
+                temp.push(curr);
+                curr = cameFrom.get(curr);
+            }
+            while (temp.size() > 1) System.out.print(temp.pop() + " --> ");
+            System.out.println(temp.pop());
+        }
+    }
 
+    private static List<String> getNextWords(String word) {
+        List<String> words = new ArrayList<>();
+        char[] arr = word.toCharArray();
+        for (int i = 0; i < arr.length; i++) {
+            for (int c = 'a'; c <= 'z'; c++) {
+                char temp = arr[i];
+                if (arr[i] != c) {
+                    arr[i] = (char) c;
+                }
+                String newWord = new String(arr);
+                if (dictionary.contains(newWord) && !words.contains(newWord)) words.add(newWord);
+            }
+            arr = word.toCharArray();
+        }
+        return words;
     }
 }
